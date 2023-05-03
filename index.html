@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Power Rule Calculator</title>
+	<link rel="stylesheet" href="style.css">
+	<meta name="google-site-verification" content="K3jkB7qz7fxHI8cf13PEXG74iCHEHJ6H008MBzE6ams" />
+</head>
+<body>
+	<div class="title">
+		<h1 class="titleP">Power Rule Calculator</h1>
+	</div>
+	<div class="equation">
+		<p class="p">Enter an equation (Not completely simplified yet)</p>
+		<p class="p">Use ^ to represent the exponent and / to represent division:</p>
+		<p class="p">Example: 2x^2 - (10x^5 / 6x^8) + 6x^7</p>
+		<div class="input-text">
+			<input type="text" id="input">
+			<button id="calculate">Calculate</button>
+		</div>
+		<p id="work" class="p"><span id="show-work">Work Steps (Only Power Rule)</span></p>
+		<p id="power" class="p"><span>Power Rule ⇧</span></p>
+		<p id="resultP" class="p">Result: <span id="result"></span></p>
+	</div>
+	<script src="app.js"></script>
+</body>
+</html>
