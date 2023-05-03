@@ -1,4 +1,4 @@
-# Khalil Kodes Derivative
+# Khalil Kodes Derivative Calculator
 
 Simple Derivative Calculator that can do addition and subtraction and basic division with only one numerator and denominator.
 
