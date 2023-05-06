@@ -45,20 +45,25 @@ function calculate(){
         let operator = j > 0 ? newterm.charAt(0): "";
         let newparts = newterm.split("^");
         let coefficient = parseFloat(newparts[0].replace(/[^\d.-]/g, ''));
+        let multiplyCoefficient;
+        let multiplyExponent;
+        let multiplyequation = "";
         let exponent = newparts.length === 2 ? parseFloat(newparts[1].replace(/[^\d.-]/g, '')) : 1;
         let derivative = "";
+        coefficientArray.push(coefficient);
+        exponentArray.push(exponent);
+
         if(!newterm.includes("x")){
           derivative = "0";
         }
         else if(coefficient === 0){
           continue;
         }
+
         else{
           if(isNaN(coefficient)){
             coefficient = 1;
           }
-          coefficientArray.push(coefficient);
-          exponentArray.push(exponent);
           if(coefficient !== coefficientArray[0] && coefficient < 0){
             coefficient = -coefficient;
           }
@@ -70,7 +75,31 @@ function calculate(){
             result += lastOperator;
           }
           derivative += derivativeCoefficient + "x" + "<sup>" + (exponent - 1) + "</sup>";
-          result += operator + " " + derivative + " ";
+          if(operator === "*"){   
+            operator = "";
+            derivative = '';
+            multiplycoefficientArray.push(coefficient);
+            multiplyexponentArray.push(exponent);
+            let index = coefficientArray.indexOf(multiplycoefficientArray[0]);
+            if(!multiplycoefficientArray.includes(coefficientArray[index-1], 0)){
+              multiplyexponentArray.push(exponentArray[index - 1]);
+              multiplycoefficientArray.push(coefficientArray[index - 1]);
+            }
+            multiplyExponent = multiplyexponentArray.reduce((a,b) => a+b, 0);
+            multiplyCoefficient = multiplycoefficientArray.reduce((a, b) => a*b, 1);
+            multiplyCoefficient *= multiplyExponent;
+            multiplyExponent -= 1;
+            multiplyequation += multiplyCoefficient + "x" + "<sup>" + multiplyExponent + "</sup>";
+            result = multiplyequation + " " + operator + " " + derivative;
+          } 
+          else{
+            if((exponent - 1) !== 0){
+              result += operator + " " + derivative + " ";
+            }
+            else{
+              result += operator + " " + coefficient + " ";
+            }
+          }
         }
       }
     } 
@@ -99,25 +128,34 @@ function calculate(){
           denominatorCoefficient /= j
         }
       }
-      if(numeratorExponent < denominatorExponent && denominatorCoefficient !== 0){
-        result += lastOperator + " " + "(" + newnumeratorCoefficient + "/" + denominatorCoefficient + "x" + "<sup>" + (-newExponent + 1) + "</sup>" + ")" + " ";
-      }
-      else if((newExponent-1) === 0){
-        result += lastOperator + " " + "(" + newnumeratorCoefficient + "/" + denominatorCoefficient + ")" + " ";
-      }
-      else if(denominatorCoefficient === 1 && numeratorExponent > denominatorExponent && newExponent !== 0){
 
-        result += lastOperator + " " + "(" + newnumeratorCoefficient + "x" + "<sup>" + (newExponent - 1) + "</sup>" + ")" + " ";
+
+      
+      if(denominatorCoefficient === 0){
+        result += lastOperator + undefined;
       }
-      else if(newExponent === 0 && denominatorCoefficient !== 0){
+      else if(newExponent === 0){
         result += lastOperator + " 0 ";
       }
-      else if(denominatorCoefficient === 0){
-
-        result += undefined + " "
+      else if((newExponent - 1) === 0){
+        result += "1";
       }
-      else{
-       result += lastOperator + " " + "(" + newnumeratorCoefficient + "x" + "<sup>" + (newExponent - 1) + "</sup>" + "/" + denominatorCoefficient + ")" + " ";
+      else if(denominatorCoefficient === 1 && newExponent > 0){
+        console.log("de");
+        result += lastOperator + " " + "(" + newnumeratorCoefficient + "x" + "<sup>" + (newExponent - 1) + "</sup>" + ") ";
+      }
+      else if((newExponent - 1) === 1){
+        console.log("fir")
+        result += lastOperator + " " + "(" + newnumeratorCoefficient + "x" + "/" + denominatorCoefficient + ")" + " ";
+      }
+      else if(newExponent < 0){
+        console.log('sec');
+        result += lastOperator + " " + "(" + newnumeratorCoefficient + "/" + denominatorCoefficient + "x" + "<sup>" + (-newExponent + 1) + "</sup>" + ")" + " ";
+      }
+      else if(newExponent > 0){
+      
+        console.log('third');
+        result += lastOperator + " " + "(" + newnumeratorCoefficient + "x" + "<sup>" + (newExponent - 1) + "</sup>" +  "/" + denominatorCoefficient + ")" + " ";
       }
     }
     
@@ -137,21 +175,6 @@ function workSteps(coefficient, exponent, result){
   work.innerHTML = steps;
 }
 
-function addLiketerms(coefficient, exponent, derivativeCoefficient, derivativeExponent){
-  let newExponent;
-  let newDerivativeCoefficent;
-  for(let i = 0; i < exponent.length - 1; i++){
-    for(let j = i+1; j < exponent.length; j++){
-      if(exponent[i] === exponent[j]){
-        let newCoefficient = coefficient[i] + coefficient[j];
-        newDerivativeCoefficent = newCoefficient * exponent[i];
-        newExponent = exponent[i] - 1;
-      }
-    }
-  }
-  derivativeCoefficient = newDerivativeCoefficent;
-  derivativeExponent = newExponent;
-}
 
 function changeButtonColor(){
     if(input.value !== ""){
